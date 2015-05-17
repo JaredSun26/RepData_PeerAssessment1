@@ -161,22 +161,31 @@ So, after filling the missing data data, the new mean is the same as the old mea
 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
 ```r
-data$dayOfWeek<-ifelse(as.POSIXlt(data$date)$wday==0 | as.POSIXlt(data$date)$wday==6, "weekend", "weekday")
-head(data)
+imputed$dayOfWeek<-ifelse(as.POSIXlt(data$date)$wday==0 | as.POSIXlt(data$date)$wday==6, "weekend", "weekday")
+head(imputed)
 ```
 
 ```
-##   steps       date interval dayOfWeek
-## 1    NA 2012-10-01        0   weekday
-## 2    NA 2012-10-01        5   weekday
-## 3    NA 2012-10-01       10   weekday
-## 4    NA 2012-10-01       15   weekday
-## 5    NA 2012-10-01       20   weekday
-## 6    NA 2012-10-01       25   weekday
+##       steps       date interval dayOfWeek
+## 1 1.7169811 2012-10-01        0   weekday
+## 2 0.3396226 2012-10-01        5   weekday
+## 3 0.1320755 2012-10-01       10   weekday
+## 4 0.1509434 2012-10-01       15   weekday
+## 5 0.0754717 2012-10-01       20   weekday
+## 6 2.0943396 2012-10-01       25   weekday
 ```
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 
+```r
+fiveMinDay<-imputed%>%
+  group_by(interval,dayOfWeek)%>%
+  summarise(average=mean(steps))
+g42<-ggplot(fiveMinDay, aes(x=interval,y=average))+geom_line()
+g42+labs(x= "5-min intervals", y="Average Number of Steps", title="Average Number of Steps Taken, Averaged Across All Days")+facet_grid(.~dayOfWeek)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png) 
 
 
